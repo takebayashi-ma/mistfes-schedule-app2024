@@ -10,15 +10,19 @@ const Home = () => {
   const [selectedSchedules6_9, setSelectedSchedules6_9] = useState([]);
 
   useEffect(() => {
-    const storedSchedules6_8 = JSON.parse(localStorage.getItem('selectedSchedules6/8')) || [];
-    const storedSchedules6_9 = JSON.parse(localStorage.getItem('selectedSchedules6/9')) || [];
+    const storedSchedules6_8 = JSON.parse(localStorage.getItem('selectedSchedules_6-8')) || [];
+    const storedSchedules6_9 = JSON.parse(localStorage.getItem('selectedSchedules_6-9')) || [];
     setSelectedSchedules6_8(storedSchedules6_8);
     setSelectedSchedules6_9(storedSchedules6_9);
   }, []);
 
   const getSortedSchedules = (schedules) => {
     return schedules.map(scheduleId => {
-      const [artist, place, start, end] = scheduleId.split('-');
+      const parts = scheduleId.split('-');
+      const artist = parts[0];
+      const place = parts.slice(1, -2).join('-'); // 最後の2つ以外の部分を再結合
+      const start = parts[parts.length - 2];
+      const end = parts[parts.length - 1];
       return { artist, place, start, end };
     }).sort((a, b) => a.start.localeCompare(b.start));
   };

@@ -188,6 +188,12 @@ h2, h3 {
   background-color: var(--button-hover-background-color);
 }
 
+.menu-artist-links {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 main {
   display: flex;
   flex-direction: column;

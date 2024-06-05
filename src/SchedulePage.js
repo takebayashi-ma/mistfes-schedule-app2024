@@ -1,107 +1,68 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import html2canvas from 'html2canvas';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './App.css';
 import data6_8 from './data6_8.json';
 import data6_9 from './data6_9.json';
 
-const SchedulePage = ({ date }) => {
-  const [concerts, setConcerts] = useState([]);
-  const [selectedSchedules, setSelectedSchedules] = useState(new Set());
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const artistRefs = useRef({});
+const SchedulePage = () => {
+  const { date } = useParams();
+  const [selectedSchedules, setSelectedSchedules] = useState([]);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const data = date === '6/8' ? data6_8 : data6_9;
-    const sortedData = [...data].sort((a, b) => a.artist.localeCompare(b.artist));
-    setConcerts(sortedData);
-
-    const storedSchedules = JSON.parse(localStorage.getItem(`selectedSchedules${date}`));
-    if (storedSchedules) {
-      setSelectedSchedules(new Set(storedSchedules));
+    if (date) {
+      const storedSchedules = JSON.parse(localStorage.getItem(`selectedSchedules_${date}`)) || [];
+      setSelectedSchedules(storedSchedules);
     }
   }, [date]);
 
-  const handleScheduleToggle = (artist, place, start, end) => {
-    const scheduleId = `${artist}-${place}-${start}-${end}`;
-    setSelectedSchedules(prevSelected => {
-      const newSelected = new Set(prevSelected);
-      if (newSelected.has(scheduleId)) {
-        newSelected.delete(scheduleId);
-      } else {
-        newSelected.add(scheduleId);
-      }
-      localStorage.setItem(`selectedSchedules${date}`, JSON.stringify(Array.from(newSelected)));
-      return newSelected;
-    });
-  };
+  const handleToggleSchedule = (scheduleId) => {
+    let updatedSchedules;
+    if (selectedSchedules.includes(scheduleId)) {
+      updatedSchedules = selectedSchedules.filter(id => id !== scheduleId);
+    } else {
+      updatedSchedules = [...selectedSchedules, scheduleId];
+    }
 
-  const isSelected = (artist, place, start, end) => {
-    return selectedSchedules.has(`${artist}-${place}-${start}-${end}`);
-  };
-
-  const handleDownloadImage = () => {
-    const element = document.getElementById('selected-schedules');
-    html2canvas(element).then(canvas => {
-      const image = canvas.toDataURL('image/png');
-      const newWindow = window.open('', '_blank');
-      newWindow.document.write(`
-        <html>
-          <head>
-            <title>Selected Schedules</title>
-            <style>
-              body {
-                margin: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                background-color: #121212;
-                flex-direction: column;
-              }
-              img {
-                max-width: 100%;
-                max-height: 80vh;
-                object-fit: contain;
-              }
-            </style>
-          </head>
-          <body>
-            <img src="${image}" alt="Selected Schedules" />
-          </body>
-        </html>
-      `);
-      newWindow.document.close();
-    });
-  };
-
-  const scrollToElement = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-      setIsMenuOpen(false);
+    setSelectedSchedules(updatedSchedules);
+    if (date) {
+      localStorage.setItem(`selectedSchedules_${date}`, JSON.stringify(updatedSchedules));
     }
   };
 
-  const scrollToArtist = (artist) => {
-    artistRefs.current[artist].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    setIsMenuOpen(false);
+  const getSchedules = () => {
+    const schedules = date === '6-8' ? data6_8 : data6_9;
+    return schedules.sort((a, b) => a.artist.localeCompare(b.artist));
   };
 
-  const handleLinkClick = (path) => {
-    setIsMenuOpen(false);
-    navigate(path);
-  };
-
-  const getSortedSchedules = () => {
-    const schedulesArray = Array.from(selectedSchedules).map(scheduleId => {
-      const [artist, place, start, end] = scheduleId.split('-');
+  const getSortedSchedules = (schedules) => {
+    return schedules.map(scheduleId => {
+      const parts = scheduleId.split('-');
+      const artist = parts[0];
+      const place = parts.slice(1, -2).join('-'); // 最後の2つ以外の部分を再結合
+      const start = parts[parts.length - 2];
+      const end = parts[parts.length - 1];
       return { artist, place, start, end };
-    });
+    }).sort((a, b) => a.start.localeCompare(b.start));
+  };
 
-    schedulesArray.sort((a, b) => a.start.localeCompare(b.start));
-    return schedulesArray;
+  const schedules = getSchedules();
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    setMenuOpen(false);
+  };
+
+  const scrollToSelectedSchedules = () => {
+    const element = document.getElementById('selected-schedules');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -109,75 +70,84 @@ const SchedulePage = ({ date }) => {
       <header className="schedule-header">
         <h1>mistFES {date}</h1>
         <div className="header-buttons">
-          <button className="scroll-button" onClick={() => scrollToElement('selected-schedules')}>
+          <button className="scroll-button" onClick={scrollToSelectedSchedules}>
             選択中のスケジュールへ
           </button>
-          <button className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            ☰
+          <button className="hamburger" onClick={toggleMenu}>
+            &#9776;
           </button>
         </div>
       </header>
-      {isMenuOpen && (
-        <nav className="menu">
-          <button className="hamburger" onClick={() => setIsMenuOpen(false)}>
-            ☰
+      {menuOpen && (
+        <div className="menu">
+          <button className="hamburger" onClick={toggleMenu}>
+            &#x2715;
           </button>
-          <Link to="/" className="menu-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
-          <button className="menu-link" onClick={() => handleLinkClick('/6-8')}>6/8</button>
-          <button className="menu-link" onClick={() => handleLinkClick('/6-9')}>6/9</button>
-          {concerts.map((artistData, index) => (
-            <button key={index} className="menu-artist-button" onClick={() => scrollToArtist(artistData.artist)}>
-              {artistData.artist}
-            </button>
-          ))}
-        </nav>
+          <button className="menu-button" onClick={() => handleNavigate('/')}>
+            Home
+          </button>
+          <button className="menu-button" onClick={() => handleNavigate('/6-8')}>
+            6/8
+          </button>
+          <button className="menu-button" onClick={() => handleNavigate('/6-9')}>
+            6/9
+          </button>
+          <div className="menu-artist-links">
+            {schedules.map((artistData, index) => (
+              <button
+                key={index}
+                className="menu-artist-button"
+                onClick={() => {
+                  document.getElementById(artistData.artist).scrollIntoView({ behavior: 'smooth' });
+                  setMenuOpen(false);
+                }}
+              >
+                {artistData.artist}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
-      <nav className="date-links">
-        <Link to="/6-8" className="nav-link">6/8</Link>
-        <Link to="/6-9" className="nav-link">6/9</Link>
-      </nav>
       <main>
-        <section className="concert-list">
-          {concerts.map((artistData, index) => (
-            <div key={index} className="artist-row" id={artistData.artist} ref={el => artistRefs.current[artistData.artist] = el}>
-              <div className="artist-name">
-                <h2>{artistData.artist}</h2>
-              </div>
+        <div className="concert-list">
+          {schedules.map((artistData, index) => (
+            <div key={index} className="artist" id={artistData.artist}>
+              <div className="artist-name">{artistData.artist}</div>
               <div className="artist-schedules">
                 <ul>
-                  {artistData.schedules.map((schedule, idx) => (
-                    <li
-                      key={idx}
-                      className={`schedule-item ${isSelected(artistData.artist, schedule.place, schedule.start, schedule.end) ? 'selected' : ''}`}
-                      onClick={() => handleScheduleToggle(artistData.artist, schedule.place, schedule.start, schedule.end)}
-                    >
-                      {schedule.place} - {schedule.start} to {schedule.end}
-                    </li>
-                  ))}
+                  {artistData.schedules.map((schedule, idx) => {
+                    const scheduleId = `${artistData.artist}-${schedule.place}-${schedule.start}-${schedule.end}`;
+                    const isSelected = selectedSchedules.includes(scheduleId);
+                    return (
+                      <li
+                        key={idx}
+                        className={`schedule-item ${isSelected ? 'selected' : ''}`}
+                        onClick={() => handleToggleSchedule(scheduleId)}
+                      >
+                        {schedule.place} - {schedule.start} to {schedule.end}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
           ))}
-        </section>
+        </div>
+        <div className="selected-schedules" id="selected-schedules">
+          <h2>mistFES {date}</h2>
+          <ul>
+            {selectedSchedules.length > 0 ? (
+              getSortedSchedules(selectedSchedules).map((schedule, index) => (
+                <li key={index}>
+                  {schedule.artist} - {schedule.place} - {schedule.start} to {schedule.end}
+                </li>
+              ))
+            ) : (
+              <li>なし</li>
+            )}
+          </ul>
+        </div>
       </main>
-      <section className="selected-schedules" id="selected-schedules">
-        <h2>mistFES {date}</h2>
-        <ul>
-          {Array.from(selectedSchedules).length > 0 ? (
-            getSortedSchedules().map((schedule, index) => (
-              <li key={index} onClick={() => scrollToArtist(schedule.artist)}>
-                {schedule.artist} - {schedule.place} - {schedule.start} to {schedule.end}
-              </li>
-            ))
-          ) : (
-            <li>なし</li>
-          )}
-        </ul>
-      </section>
-      <button onClick={handleDownloadImage} className="download-button">画像で表示</button>
-      <footer className="footer">
-        &copy; bemarble
-      </footer>
     </div>
   );
 };
