@@ -61,7 +61,7 @@ const Home = () => {
   return (
     <div>
       <header className="schedule-header">
-        <h1>mistFES2024マイタイムテーブル</h1>
+        <h1>mistFES</h1>
       </header>
       <nav className="date-links">
         <Link to="/6-8" className="nav-link">6/8</Link>

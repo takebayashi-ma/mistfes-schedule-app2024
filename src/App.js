@@ -1,21 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
-import SchedulePage from './SchedulePage';
+import { Route, Routes } from 'react-router-dom';
 import HomePage from './HomePage';
+import SchedulePage from './SchedulePage';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/6-8" element={<SchedulePage date="6/8" />} />
-          <Route path="/6-9" element={<SchedulePage date="6/9" />} />
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/6-8" element={<SchedulePage date="6/8" />} />
+        <Route path="/6-9" element={<SchedulePage date="6/9" />} />
+      </Routes>
+    </div>
   );
-};
+}
 
 export default App;
