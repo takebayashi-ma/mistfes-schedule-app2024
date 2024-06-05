@@ -2,7 +2,6 @@
   "name": "my-concert-schedule",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://takebayashi-ma.github.io/mistfes-schedule-app2024",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
