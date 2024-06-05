@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.a9916ce5.css",
-    "main.js": "/static/js/main.7e0c84aa.js",
-    "static/js/453.db09b4c8.chunk.js": "/static/js/453.db09b4c8.chunk.js",
-    "index.html": "/index.html",
-    "main.a9916ce5.css.map": "/static/css/main.a9916ce5.css.map",
-    "main.7e0c84aa.js.map": "/static/js/main.7e0c84aa.js.map",
-    "453.db09b4c8.chunk.js.map": "/static/js/453.db09b4c8.chunk.js.map"
+    "main.css": "/mistfes-schedule-app2024/static/css/main.a9916ce5.css",
+    "main.js": "/mistfes-schedule-app2024/static/js/main.a9216675.js",
+    "static/js/453.db09b4c8.chunk.js": "/mistfes-schedule-app2024/static/js/453.db09b4c8.chunk.js",
+    "index.html": "/mistfes-schedule-app2024/index.html",
+    "main.a9916ce5.css.map": "/mistfes-schedule-app2024/static/css/main.a9916ce5.css.map",
+    "main.a9216675.js.map": "/mistfes-schedule-app2024/static/js/main.a9216675.js.map",
+    "453.db09b4c8.chunk.js.map": "/mistfes-schedule-app2024/static/js/453.db09b4c8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a9916ce5.css",
-    "static/js/main.7e0c84aa.js"
+    "static/js/main.a9216675.js"
   ]
 }
