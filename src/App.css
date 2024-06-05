@@ -1,38 +1,391 @@
+/* src/App.css */
+:root {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --header-background-color: #1f1f1f;
+  --header-text-color: #ffffff;
+  --link-color: #bb86fc;
+  --link-hover-color: #3700b3;
+  --border-color: #333333;
+  --selected-background-color: #333333;
+  --button-background-color: #bb86fc;
+  --button-hover-background-color: #3700b3;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
 .App {
   text-align: center;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow-x: hidden; /* 横スクロールを防止 */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+header {
+  background-color: var(--header-background-color);
+  color: var(--header-text-color);
+  padding: 10px 0; /* パディングを狭める */
+  border-bottom: 1px solid var(--border-color);
+  position: fixed; /* 固定表示 */
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header-buttons {
+  display: flex;
+  align-items: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+h1, h2, h3 {
+  margin: 0;
+}
+
+h1 {
+  font-size: 2em; /* 文字サイズを小さくする */
+}
+
+h2, h3 {
+  font-size: 1.2em; /* 文字サイズを小さくする */
+  margin: 3px 0; /* 間隔を狭める */
+}
+
+.schedule-header {
+  padding-top: 60px; /* ヘッダーの高さ分の余白を追加 */
+}
+
+.schedule-header h1 {
+  text-align: left;
+  margin-left: 10px;
+}
+
+.hamburger {
+  font-size: 1.5em; /* 文字サイズを小さくする */
+  background: none;
+  border: none;
+  color: var(--header-text-color);
+  cursor: pointer;
+  margin-left: 10px; /* ボタンの右に配置するためのマージン */
+}
+
+.scroll-button {
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.scroll-button:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+.nav-link {
+  color: var(--link-color);
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 10px;
+  background-color: transparent;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: var(--link-hover-color);
+}
+
+.menu {
+  background-color: var(--header-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  position: fixed; /* 絶対位置から固定位置に変更 */
+  top: 60px; /* ヘッダーの下に配置 */
+  right: 10px;
+  width: 200px;
+  z-index: 1100; /* ヘッダーよりも前面に表示 */
+  display: flex;
+  flex-direction: column; /* 縦並び */
+  align-items: flex-start; /* 左寄せ */
+}
+
+.menu .hamburger {
+  align-self: flex-end;
+  margin-bottom: 10px;
+}
+
+.menu-link {
+  display: block;
+  padding: 10px;
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  text-align: left;
+  text-decoration: none;
+  font-size: 1em;
+  cursor: pointer;
+  width: 100%; /* 幅を100%に */
+  box-sizing: border-box;
+}
+
+.menu-link:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+.date-links {
+  margin-top: 10px;
+}
+
+.menu-button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  border: none;
+  font-size: 1em;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.menu-button:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+.menu-artist-button {
+  display: block;
+  width: 100%;
+  padding: 8px; /* パディングを狭める */
+  border: none;
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.9em; /* 文字サイズを小さくする */
+  transition: background-color 0.3s;
+  box-sizing: border-box;
+}
+
+.menu-artist-button:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 8px; /* 間隔を狭める */
+  flex-wrap: wrap;
+  padding-top: 130px; /* ヘッダーとメニューの高さ分の余白を追加 */
 }
 
-.App-link {
-  color: #61dafb;
+.concert-list, .selected-schedules {
+  background-color: var(--background-color);
+  padding: 10px; /* パディングを狭める */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  flex: 1;
+  min-width: 300px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.artist-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5px; /* 間隔を狭める */
+  flex-wrap: wrap;
+  position: relative; /* 擬似要素を使用するために追加 */
+}
+
+.artist-row::before {
+  content: '';
+  display: block;
+  height: 60px; /* ヘッダーの高さに合わせる */
+  margin-top: -60px; /* ヘッダーの高さに合わせる */
+  visibility: hidden;
+}
+
+.artist-name {
+  flex: 1;
+  text-align: left;
+  padding-right: 10px;
+  min-width: 120px;
+}
+
+.artist-schedules {
+  flex: 3;
+  text-align: left;
+  min-width: 180px;
+}
+
+.artist ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule-item {
+  display: block;
+  margin: 3px 0; /* 間隔を狭める */
+  padding: 5px;
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.8em; /* 文字サイズを小さくする */
+}
+
+.schedule-item:hover {
+  border-color: var(--link-hover-color);
+}
+
+.schedule-item.selected {
+  background-color: var(--selected-background-color);
+  border-color: var(--link-color);
+}
+
+.selected-schedules {
+  margin-top: 10px; /* 間隔を狭める */
+  text-align: left; /* 左寄せに変更 */
+}
+
+.selected-schedules ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.selected-schedules li {
+  background-color: var(--selected-background-color);
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer; /* スクロール可能にするために追加 */
+}
+
+.download-button {
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 10px; /* 間隔を狭める */
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+footer {
+  background-color: var(--header-background-color);
+  color: var(--header-text-color);
+  padding: 10px 0;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
   }
-  to {
-    transform: rotate(360deg);
+
+  header {
+    padding: 10px 0;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 1.5em; /* 文字サイズをさらに小さくする */
+  }
+
+  h2, h3 {
+    font-size: 1em; /* 文字サイズをさらに小さくする */
+  }
+
+  .schedule-header h1 {
+    margin-left: 5px;
+  }
+
+  .hamburger {
+    font-size: 1.2em; /* 文字サイズをさらに小さくする */
+    margin-left: 5px; /* ボタンの右に配置するためのマージン */
+  }
+
+  .menu .hamburger {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    align-self: flex-end;
+  }
+
+  .menu {
+    top: 60px; /* ヘッダーの下に固定 */
+    right: 10px; /* 右に配置 */
+    width: calc(100% - 20px); /* 幅を調整 */
+    max-height: 80vh; /* 最大高さを設定 */
+    overflow-y: auto; /* 縦スクロールを追加 */
+  }
+
+  .menu-button {
+    font-size: 0.9em;
+    padding: 10px;
+  }
+
+  .menu-artist-button {
+    padding: 6px; /* パディングをさらに狭める */
+    font-size: 0.8em; /* 文字サイズをさらに小さくする */
+  }
+
+  main {
+    flex-direction: column;
+    gap: 8px; /* 間隔を狭める */
+  }
+
+  .concert-list, .selected-schedules {
+    min-width: 100%;
+  }
+
+  .artist-row {
+    flex-direction: column;
+    margin-bottom: 5px; /* 間隔を狭める */
+  }
+
+  .artist-row::before {
+    height: 50px; /* ヘッダーの高さに合わせる */
+    margin-top: -50px; /* ヘッダーの高さに合わせる */
+  }
+
+  .artist-name, .artist-schedules {
+    flex: none;
+    width: 100%;
+    min-width: auto;
+    margin-bottom: 5px; /* 間隔を狭める */
+  }
+
+  .schedule-item {
+    font-size: 0.7em; /* 文字サイズをさらに小さくする */
+    margin: 3px 0; /* 間隔を狭める */
+  }
+
+  .download-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    margin-top: 10px; /* 間隔を狭める */
   }
 }
