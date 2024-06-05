@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import './App.css';
-import data6_8 from './data6_8.json';
-import data6_9 from './data6_9.json';
+import './data6_8.json';
+import './data6_9.json';
 
 const Home = () => {
   const [selectedSchedules6_8, setSelectedSchedules6_8] = useState([]);
